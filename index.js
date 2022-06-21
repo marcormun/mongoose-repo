@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const db = require('./config/database');
 const User = require('./models/User')
+const userRouter = require('./routes/user.routes')
 
 const app = express();
 
@@ -13,28 +14,7 @@ app.use(express.json())
 const PORT = process.env.PORT || 4000;
 
 //routes
-
-app.get('/users', async (req,res)=>{
-    try{
-        const users = await User.find();
-        
-        return res.status(200).json(
-            {
-                success: true,
-                message: 'Get all users retrieved succcesfully',
-                data: users
-            }
-        );
-    }catch (error) {
-        return res.status(500).json(
-            {
-                success: false,
-                message: 'Error retrieving users',
-                error: error.message
-            }
-        )
-    }
-})
+app.use('/api', userRouter);
 
 app.post('/users', async(req,res)=>{
     try{
