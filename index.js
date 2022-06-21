@@ -1,8 +1,6 @@
 const express = require('express');
-const mongoose = require('mongoose');
 require('dotenv').config();
 const db = require('./config/database');
-const User = require('./models/User')
 const userRouter = require('./routes/user.routes')
 
 const app = express();
@@ -16,31 +14,7 @@ const PORT = process.env.PORT || 4000;
 //routes
 app.use('/api', userRouter);
 
-app.post('/users', async(req,res)=>{
-    try{
-        const {username,email,password} = req.body;
-        const newUser = {
-            username,
-            email,
-            password
-        }
-        await User.create(newUser);
-        return res.status(200).json(
-            {
-                success: true,
-                message: 'Create user succesfully'
-            }
-        )
-    }catch(error){
-        return res.status(500).json(
-            {
-                success: false,
-                message: 'Error creating user',
-                error: error?.message || error
-            }
-        )
-    }
-})
+
 
 app.get('/', (req, res)=> {
     return res.send('Bienvenidos a mi aplicacion de tareas');
