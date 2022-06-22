@@ -3,7 +3,9 @@ const router = require('express').Router();
 
 
 router.get('/users', userController.getAll)
-
-router.post('/users', userController.post)
+router.get('/users/:id',userController.getUserById)
+router.post('/users', userController.createUser)
+router.put('/users/:id',userController.updateUser)
+router.delete('/users/:id',userController.deleteUser)
 
 module.exports = router;
