@@ -1,6 +1,7 @@
 const authController = {};
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 authController.register = async(req,res)=>{
     try{
@@ -40,13 +41,46 @@ authController.register = async(req,res)=>{
         )
     }
 }
-authController.login = (req,res)=>{
-    return res.status(200).json(
-        {
-            success: true,
-            message: 'User logged'  
+authController.login = async (req,res)=>{
+    try{
+        const {email, password} = req.body;
+        if(!email || !password){
+            return res.status(400).json({
+                    success: false,
+                    message: 'Email and password are required'  
+            })
         }
-    )
+        const user = await User.findOne({email});
+
+        if(!user){
+            return res.status(400).json({
+                    success: false,
+                    message: 'Bad credentials'  
+            })
+        }
+
+        const isValidPassword = bcrypt.compareSync(password, user.password);
+
+        if(!isValidPassword){
+            return res.status(401).json({
+                    success: false,
+                    message: 'Bad credentials'  
+            })
+        }
+        const token = jwt.sign({user_id : user._id,user_role: user.role}, process.env.JWT_SECRET, {expiresIn: '5h'});
+        console.log(token);
+        return res.status(200).json({
+                success: true,
+                message: 'User logged',
+                token: token  
+        })
+    }catch(error){
+        return res.status(500).json({
+                success: false,
+                message: 'Error logging',
+                error: error?.message || error
+        })
+    }
 }
 
 module.exports = authController;
