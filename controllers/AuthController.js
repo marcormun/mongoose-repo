@@ -88,5 +88,24 @@ authController.login = async (req,res)=>{
         })
     }
 }
+authController.profile = async (req,res) => {
+    try{
+        const userId = req.user_id;
+
+        const user = await User.findById(userId).select(['-password','-__v']);
+
+        return res.status(200).json({
+            success: true,
+            message:"User profile",
+            data: user
+        })
+    }catch(error){
+        return res.status(500).json({
+            success: false,
+            message: 'User profile failed',
+            error: error?.message || error
+    })
+    }
+}
 
 module.exports = authController;
