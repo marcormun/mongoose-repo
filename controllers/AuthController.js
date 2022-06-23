@@ -6,13 +6,19 @@ const jwt = require('jsonwebtoken');
 authController.register = async(req,res)=>{
     try{
         const {username,email,password} = req.body;
+
+        //Validar campos
+        if(!username || !email || !password){
+            return res.status(400).json({
+                success: false,
+                message: 'Email, name, password are required'
+        })
+        }
         if(password.length<6 || password.length>10){
-            return res.status(404).json(
-                {
+            return res.status(404).json({
                     success: false,
                     message: 'Password length must be between 6 and 10 characters'
-                }
-            )
+            })
         }
         //codificar password
         const salt = await bcrypt.genSalt(10);

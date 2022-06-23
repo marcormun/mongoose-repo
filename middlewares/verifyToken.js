@@ -9,7 +9,7 @@ const verifyToken = (req, res, next)=> {
                 message: 'Token invalid'
             })
         }
-        
+
         const token = authorization.split(' ')[1];
 
         let decoded = jwt.verify(token, process.env.JWT_SECRET)
@@ -20,6 +20,8 @@ const verifyToken = (req, res, next)=> {
                 message: 'Token invalid 2'
             })
         }
+        req.user_id = decoded.user_id;
+        req.user_role = decoded.user_role;
         next();
     }catch(error){
         return res.status(500).json({
